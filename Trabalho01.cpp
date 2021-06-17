@@ -1,6 +1,9 @@
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
+
+// Funções auxiliares para o HeapSort
 
 int pai(int i){ return (i-1)/2; }
 
@@ -8,13 +11,6 @@ int f_esq(int i){ return 2*i + 1; }
 
 int f_dir(int i){ return 2*i + 2; }
 
-void mostrar_vetor(int* vetor, int tam_vetor){
-	for(int i = 0; i < tam_vetor; i++){
-		cout << vetor[i] << " ";
-	}
-
-	cout << endl;
-}
 
 void descer(int* vetor, int indice_atual, int tam_vetor){
 
@@ -53,52 +49,61 @@ void heapsort(int* vetor, int tam_vetor){
 		vetor[0] = vetor[i];
 		vetor[i] = maior;
 		tam_vetor = tam_vetor - 1;
-	 	cout << "iteração " << i << endl;
 		descer(vetor, 0, tam_vetor);
 	}
 }
 
+void mostrar_vetor(int* vetor, int tam_vetor){
+	for(int i = 0; i < tam_vetor; i++){
+		cout << vetor[i] << " ";
+	}
 
-int* gerar_instancia(char t_instancia, int tam_vetor){
-	int vetor[tam_vetor];
+	cout << endl;
+}
 
-	if(t_instancia == 'C'){
+void gerar_instancia(int* vetor, char* t_instancia, int tam_vetor){
+
+
+	if(t_instancia[0] == 'C'){
 		for(int i = 0; i < tam_vetor; i++){
 			vetor[i] = i;
 		}
 
-	} else if(t_instancia == 'D'){
-		for (int i = tam_vetor; i > 0; i++){
+	} else if(t_instancia[0] == 'D'){
+		for (int i = tam_vetor - 1; i >= 0; i--){
 			vetor[i] = i;
 		}
+	}else{
+		cout << "Algum erro aconteceu" << endl;
 	}
-	
+
 	cout << "Ok, vetor teste feito" << endl;
-	return vetor;
 } 
 
-int main(){
-	char t_instancia;
+
+
+
+int main(int argc, char** argv){
+	char* t_instancia;
 	int tam_vetor;
-	int* vetor;
 
-	cin >> t_instancia;
+	t_instancia = argv[argc - 2];
+	tam_vetor = atoi(argv[argc - 1]);
 
-	cin >> tam_vetor;
+	cout << "Tipo instância: " << t_instancia << endl;
+	cout << "Tamanho do vetor: " << tam_vetor << endl;
 
-	vetor = gerar_instancia(t_instancia, tam_vetor);
+	int vetor[tam_vetor];
 
-	mostrar_vetor(vetor, 10);
+	gerar_instancia(vetor, t_instancia, tam_vetor);
+
+	mostrar_vetor(vetor, tam_vetor);
 
 	cout << "Chamar heapsort" << endl;
-	heapsort(vetor, 10);
+	heapsort(vetor, tam_vetor);
 
 	cout << "heapsort realizado com sucesso!" << endl;
 	cout << "Resutado: ";
-	mostrar_vetor(vetor, 10);
-
-
-
-	return 0;
+	mostrar_vetor(vetor, tam_vetor);
 }
 
