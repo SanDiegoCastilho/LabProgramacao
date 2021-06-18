@@ -1,9 +1,34 @@
+/*
+---------------------------------------------------------------------------------------------------------------
+
+	Trabalho 01 - Laboratório de Programação
+
+	Aluno: Francisco San Diego de Sousa Castilho - 397377
+
+	Compilar usando: g++ -Wall -Wextra -std=c++17 Trabalho01.cpp -o teste.exe
+
+	Informações: Todas as funções estão implementadas no mesmo arquivo, todas indicadas por blocos de comentários
+	como esse.
+
+---------------------------------------------------------------------------------------------------------------
+*/
+
+/*
+---------------------------------------------------------------------------------------------------------------
+										[Imports necessários]
+
+	iostream: Biblioteca de fluxo de entrada e saída c++
+	cstdlib: 
+---------------------------------------------------------------------------------------------------------------
+*/
 #include <iostream>
 #include <cstdlib>
+#include <random>
+#include <ctime>
 
 using namespace std;
 
-// Funções auxiliares para o HeapSort
+
 
 int pai(int i){ return (i-1)/2; }
 
@@ -53,57 +78,97 @@ void heapsort(int* vetor, int tam_vetor){
 	}
 }
 
-void mostrar_vetor(int* vetor, int tam_vetor){
-	for(int i = 0; i < tam_vetor; i++){
-		cout << vetor[i] << " ";
+void mostrar_instancias(int** vetor, int tam_vetor_principal, int tam_vetor_interno){
+	for(int i = 0; i < tam_vetor_principal; i++){
+
+		cout << "[ ";
+
+		for (int j = 0; j < tam_vetor_interno; j++){
+			cout << " " << vetor[i][j] << " ";
+		}
+
+		cout << "]" << endl;
 	}
 
 	cout << endl;
 }
 
-void gerar_instancia(int* vetor, char* t_instancia, int tam_vetor){
+void gerar_instancias(int** instancias, int qtd_instancias, int tam_vetor, char* t_instancia){
 
+
+	for(int i = 0; i < qtd_instancias; i++){
+		instancias[i] = new int[tam_vetor];
+	}
 
 	if(t_instancia[0] == 'C'){
-		for(int i = 0; i < tam_vetor; i++){
-			vetor[i] = i;
+		for(int i = 0; i < qtd_instancias; i++){
+			for (int j = 0; j < tam_vetor; j++){
+				
+				instancias[i][j] = j;
+			}
 		}
 
 	} else if(t_instancia[0] == 'D'){
-		for (int i = tam_vetor - 1; i >= 0; i--){
-			vetor[i] = i;
+		for(int i = 0; i < qtd_instancias; i++){
+			for (int j = 0; j < tam_vetor; j++){
+				
+				instancias[i][j] = tam_vetor - j;
+			}
 		}
+
+	}else if(t_instancia[0] == 'A'){
+		int min = 0;
+		int max = tam_vetor;
+		random_device dar_semente; 
+		mt19937 gerador( dar_semente() );
+		uniform_int_distribution<int> distribuicao(min,max);
+
+		for(int i = 0; i < qtd_instancias; i++){
+			for (int j = tam_vetor - 1; j >= 0; j--){
+				
+				instancias[i][j] = distribuicao(gerador);
+			}
+		}
+
 	}else{
 		cout << "Algum erro aconteceu" << endl;
+
 	}
 
 	cout << "Ok, vetor teste feito" << endl;
 } 
 
 
-
-
 int main(int argc, char** argv){
 	char* t_instancia;
 	int tam_vetor;
+	int qtd_instancias;
 
-	t_instancia = argv[argc - 2];
-	tam_vetor = atoi(argv[argc - 1]);
+	t_instancia = argv[argc - 3];
+	tam_vetor = atoi(argv[argc - 2]);
+	qtd_instancias = atoi(argv[argc - 1]);
 
 	cout << "Tipo instância: " << t_instancia << endl;
 	cout << "Tamanho do vetor: " << tam_vetor << endl;
+	cout << "Qauntidade de instancias: " << qtd_instancias << endl;
 
-	int vetor[tam_vetor];
+	int** instancias = new int*[qtd_instancias];
 
-	gerar_instancia(vetor, t_instancia, tam_vetor);
+	gerar_instancias(instancias, qtd_instancias, tam_vetor, t_instancia);
 
-	mostrar_vetor(vetor, tam_vetor);
+	//mostrar_instancias(instancias, qtd_instancias, tam_vetor);
 
 	cout << "Chamar heapsort" << endl;
-	heapsort(vetor, tam_vetor);
+	clock_t i = clock();
+	for (int i = 0; i < qtd_instancias; i++){
+		heapsort(instancias[i], tam_vetor);
+	}
+	clock_t f = clock();
+	cout << "Tempo de CPU: " << (f-i) / (double) CLOCKS_PER_SEC << " segundos.\n";
 
 	cout << "heapsort realizado com sucesso!" << endl;
 	cout << "Resutado: ";
-	mostrar_vetor(vetor, tam_vetor);
+	//mostrar_instancias(instancias, qtd_instancias, tam_vetor);
+
 }
 
