@@ -192,7 +192,7 @@ void introsort(T* vetor, int tam_vetor, char t_pivo){
 		niveis++;
 	}
 
-	introsort_rec(vetor, 0, tam_vetor, niveis, t_pivo);
+	introsort_rec(vetor, 0, tam_vetor, 2*niveis, t_pivo);
 }
 
 /*
